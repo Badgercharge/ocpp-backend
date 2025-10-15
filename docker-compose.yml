@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/app/backend
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY:-}
+      - WEATHER_CHECK_INTERVAL_MINUTES=${WEATHER_CHECK_INTERVAL_MINUTES:-10}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///data/data.db}
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
